@@ -7,7 +7,7 @@ ESP8266-based hack for the [Playstation Lamp](https://www.google.com/search?q=pl
 There is a [Playstation Lamp](https://www.google.com/search?q=playstation+lamp) available which consist of the classic Playstation icons (triangle, cricle, cross and square).
 This lamp has LED in these icons and a small controller in the base bar.
 
-Why not use this lamp to connected it to the smart home via MQTT to get its state as well use it to signal some conditions.
+Why not use this lamp to connect it to the smart home via MQTT to get its state as well use it to signal some conditions?
 
 
 ## Solution
@@ -57,6 +57,7 @@ To intall the ESP8266 device support in the Arduino IDE, do as follows:
   * select the right `CPU Frequency` for your board
   * select the `Flash Frequency`of `80MHz`
   * select the `Partition Scheme` of `No OTA (Large App)`
+
 
 ## Initialization Procedure
 
