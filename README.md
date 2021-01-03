@@ -1,10 +1,10 @@
 # Playstation-Lamp
 
-ESP8266-based hack for the Playstation Lamp to connect to an MQTT service.
+ESP8266-based hack for the [Playstation Lamp](https://www.google.com/search?q=playstation+lamp) to connect to an MQTT service.
 
 ## Challenge
 
-There is a Playstation lamp available which consist of the classic Playstation icons (triangle, cricle, cross and square).
+There is a [Playstation Lamp](https://www.google.com/search?q=playstation+lamp) available which consist of the classic Playstation icons (triangle, cricle, cross and square).
 This lamp has LED in these icons and a small controller in the base bar.
 
 Why not use this lamp to connected it to the smart home via MQTT to get its state as well use it to signal some conditions.
