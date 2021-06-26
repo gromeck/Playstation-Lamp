@@ -25,18 +25,20 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <analogWrite.h>
 #include "aoxa.h"
 #include "config.h"
 #include "mqtt.h"
 #include "util.h"
 
+// ESP32
 static int _aoxa_led_pin[AOXA_LEDS] = {
-  0, //  D3
-  4, //  D2
-  5, //  D1
-  16 //  D0
+  GPIO_NUM_16,
+  GPIO_NUM_17,
+  GPIO_NUM_21,
+  GPIO_NUM_22
 };
-static int _aoxa_button_pin = 14; // D5
+static int _aoxa_button_pin = GPIO_NUM_27;
 
 static int _aoxa_mode = AOXA_MODE_OFF;
 static unsigned long _aoxa_next = 0;
@@ -159,7 +161,7 @@ void AoxaUpdate(void)
 
           _toggle = !_toggle;
           for (int led = 0; led < AOXA_LEDS; led++)
-            digitalWrite(_aoxa_led_pin[led], (_toggle) ? HIGH : LOW);
+            analogWrite(_aoxa_led_pin[led], (_toggle) ? ANALOG_HIGH : ANALOG_LOW);
           _aoxa_next = now + _config.aoxa.flash_speed;
         }
         break;
@@ -169,7 +171,9 @@ void AoxaUpdate(void)
         */
         {
           int led = random(AOXA_LEDS);
-          digitalWrite(_aoxa_led_pin[led], !digitalRead(_aoxa_led_pin[led]));
+          static bool _state[AOXA_LEDS];
+
+          analogWrite(_aoxa_led_pin[led], (_state[led] = !_state[led]) ? ANALOG_LOW : ANALOG_HIGH);
           _aoxa_next = now + _config.aoxa.blink_speed;
         }
         break;
@@ -197,6 +201,8 @@ int AoxaGetMode(void)
 
 /*
    set the AOXA mode
+
+   NOTE: if the GPIOs are once in analog mode, digitalWrite() doesn'nt work anymore
 */
 void AoxaChangeMode(int mode)
 {
@@ -214,19 +220,19 @@ void AoxaChangeMode(int mode)
          switch all LEDs on, and don't schedule any updates
       */
       for (int led = 0; led < AOXA_LEDS; led++)
-        digitalWrite(_aoxa_led_pin[led], HIGH);
+        analogWrite(_aoxa_led_pin[led], ANALOG_HIGH);
       _aoxa_next = 0;
       break;
     default:
       /*
-         switch all LEDs off, and schedule updates only if we are no in OFF mode
+         switch all LEDs off, and schedule updates only if we are not in OFF mode
       */
       for (int led = 0; led < AOXA_LEDS; led++)
-        digitalWrite(_aoxa_led_pin[led], LOW);
+        analogWrite(_aoxa_led_pin[led], ANALOG_LOW);
       _aoxa_next = (_aoxa_mode == AOXA_MODE_OFF) ? 0 : millis();
       break;
   }
-  MqttPublishControl(String(AoxaLookupMode(_aoxa_mode)));
+  MqttPublishStat(String(AoxaLookupMode(_aoxa_mode)));
 }
 
 /*
