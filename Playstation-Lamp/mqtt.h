@@ -36,14 +36,18 @@
 #define MQTT_PORT_MIN           1024
 #define MQTT_PORT_MAX           65535
 
-#define MQTT_TOPIC_ANNOUNCE     "/status"
-#define MQTT_TOPIC_CONTROL      "/control"
-#define MQTT_TOPIC_DEVICE       "/device"
+#define MQTT_TOPIC_STAT         "stat"
+#define MQTT_TOPIC_CMND         "cmnd"
+#define MQTT_TOPIC_TELE         "tele"
 
 /*
  * if the MQTT connection failed, wait this time before retrying
  */
 #define MQTT_WAIT_TO_RECONNECT  10
+
+extern String _mqtt_topic_tele;
+extern String _mqtt_topic_cmnd;
+extern String _mqtt_topic_stat;
 
 /*
    initialize the MQTT context
@@ -58,7 +62,7 @@ void MqttUpdate(void);
 /*
    publish the given message
 */
-void MqttPublishControl(String msg);
+void MqttPublishStat(String msg);
 
 #endif
 

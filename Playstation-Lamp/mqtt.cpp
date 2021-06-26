@@ -33,9 +33,9 @@
    MQTT context
 */
 static PubSubClient *_mqtt;
-static String _topic_announce;
-static String _topic_control;
-static String _topic_device;
+String _mqtt_topic_tele;
+String _mqtt_topic_cmnd;
+String _mqtt_topic_stat;
 static unsigned long _mqtt_reconnect_wait = 0;
 
 /*
@@ -75,13 +75,13 @@ void MqttSetup(void)
   _mqtt = new PubSubClient(_wifiClient);
   _mqtt->setServer(_config.mqtt.server, _config.mqtt.port);
 
-  _topic_announce = String(_config.mqtt.topicPrefix) + MQTT_TOPIC_ANNOUNCE;
-  _topic_control = String(_config.mqtt.topicPrefix) + MQTT_TOPIC_CONTROL;
-  _topic_device = String(_config.mqtt.topicPrefix) + MQTT_TOPIC_DEVICE;
+  _mqtt_topic_tele = MQTT_TOPIC_TELE "/" + String(_config.mqtt.topicPrefix);
+  _mqtt_topic_cmnd = MQTT_TOPIC_CMND "/" + String(_config.mqtt.topicPrefix) + "/state";
+  _mqtt_topic_stat = MQTT_TOPIC_STAT "/" + String(_config.mqtt.topicPrefix) + "/state";
 
-  DbgMsg("MQTT: _topic_announce: %s", _topic_announce.c_str());
-  DbgMsg("MQTT: _topic_control: %s", _topic_control.c_str());
-  DbgMsg("MQTT: _topic_device: %s", _topic_device.c_str());
+  DbgMsg("MQTT: _mqtt_topic_stat: %s", _mqtt_topic_stat.c_str());
+  DbgMsg("MQTT: _mqtt_topic_cmnd: %s", _mqtt_topic_cmnd.c_str());
+  DbgMsg("MQTT: _mqtt_topic_tele: %s", _mqtt_topic_tele.c_str());
 
   LogMsg("MQTT: context ready");
 }
@@ -104,7 +104,7 @@ void MqttUpdate(void)
                               _config.mqtt.clientID,
                               _config.mqtt.user,
                               _config.mqtt.password,
-                              _topic_announce.c_str(),
+                              _mqtt_topic_stat.c_str(),
                               2,  // willQoS
                               true,  // willRetain
                               "{ \"state\":\"disconnected\" }");
@@ -116,13 +116,14 @@ void MqttUpdate(void)
         /*
            publish our connection state
         */
-        DbgMsg("MQTT: publishing connection state");
-        _mqtt->publish((_topic_announce + "/state").c_str(), "connected", true);
-        _mqtt->publish((_topic_announce + "/ssid").c_str(), WifiGetSSID().c_str(), true);
-        _mqtt->publish((_topic_announce + "/ipaddr").c_str(), WifiGetIpAddr().c_str(), true);
+        DbgMsg("MQTT: publishing telemetry");
+        _mqtt->publish((_mqtt_topic_tele + "/state").c_str(), "connected", true);
+        _mqtt->publish((_mqtt_topic_tele + "/Wifi_SSId").c_str(), WifiGetSSID().c_str(), true);
+        _mqtt->publish((_mqtt_topic_tele + "/IPAddress").c_str(), WifiGetIpAddr().c_str(), true);
+        _mqtt->publish((_mqtt_topic_tele + "/Version").c_str(),GIT_VERSION, true);
 
         // ... and resubscribe
-        _mqtt->subscribe(_topic_control.c_str());
+        _mqtt->subscribe(_mqtt_topic_cmnd.c_str());
 
         // install the handler for subscribed topics
         _mqtt->setCallback(mqtt_handler);
@@ -143,11 +144,11 @@ void MqttUpdate(void)
 /*
    publish the given message
 */
-void MqttPublishControl(String msg)
+void MqttPublishStat(String msg)
 {
   msg.toLowerCase();
-  DbgMsg("MQTT: publishing: %s=%s", _topic_control.c_str(), msg.c_str());
+  DbgMsg("MQTT: publishing: %s=%s", _mqtt_topic_stat.c_str(), msg.c_str());
 
   if (_mqtt)
-    _mqtt->publish(_topic_control.c_str(), msg.c_str(), msg.length());
+    _mqtt->publish(_mqtt_topic_stat.c_str(), msg.c_str(), msg.length());
 }/**/
