@@ -24,7 +24,7 @@
 
 */
 
-#include <ESP8266WebServer.h>
+#include <WebServer.h>
 #include "config.h"
 #include "http.h"
 #include "wifi.h"
@@ -36,7 +36,7 @@
 /*
    the web server object
 */
-static ESP8266WebServer _WebServer(80);
+static WebServer _WebServer(80);
 
 /*
   time of the last HTTP request
@@ -459,18 +459,18 @@ void HttpSetup(void)
                     "</tr>"
 
                     "<tr>"
-                    "<th>MQTT Topic Announce</th>"
-                    "<td>" + _config.mqtt.topicPrefix + MQTT_TOPIC_ANNOUNCE + "</td>"
+                    "<th>MQTT Topic Telemetry</th>"
+                    "<td>" + _mqtt_topic_tele + "</td>"
                     "</tr>"
 
                     "<tr>"
-                    "<th>MQTT Topic Control</th>"
-                    "<td>" + _config.mqtt.topicPrefix + MQTT_TOPIC_CONTROL + "</td>"
+                    "<th>MQTT Topic Command</th>"
+                    "<td>" + _mqtt_topic_cmnd + "</td>"
                     "</tr>"
 
                     "<tr>"
-                    "<th>MQTT Topic Device</th>"
-                    "<td>" + _config.mqtt.topicPrefix + MQTT_TOPIC_DEVICE + "</td>"
+                    "<th>MQTT Topic Status</th>"
+                    "<td>" + _mqtt_topic_stat + "</td>"
                     "</tr>"
 
                     "<tr><th></th><td>&nbsp;</td></tr>"
