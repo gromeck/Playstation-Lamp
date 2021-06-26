@@ -28,26 +28,28 @@
 
 #define AOXA_LEDS                 4
 
-#define AOXA_FADE_SPEED_DEFAULT   2000
+#define AOXA_FADE_SPEED_DEFAULT   100
 #define AOXA_FADE_SPEED_MIN       10
-#define AOXA_FADE_SPEED_MAX       10000
-
+#define AOXA_FADE_SPEED_MAX       1000
 #define AOXA_FADE_RANGE           (AOXA_LEDS * 25)
 
-#define AOXA_BLINK_SPEED_DEFAULT  500
+#define AOXA_BLINK_SPEED_DEFAULT  100
 #define AOXA_BLINK_SPEED_MIN      10
 #define AOXA_BLINK_SPEED_MAX      10000
 
-#define AOXA_FLASH_SPEED_DEFAULT  500
+#define AOXA_FLASH_SPEED_DEFAULT  100
 #define AOXA_FLASH_SPEED_MIN      10
 #define AOXA_FLASH_SPEED_MAX      10000
 
-#define AOXA_FIRE_SPEED_DEFAULT   50
+#define AOXA_FIRE_SPEED_DEFAULT   100
 #define AOXA_FIRE_SPEED_MIN       10
 #define AOXA_FIRE_SPEED_MAX       500
 
 #define AOXA_FIRE_LOW             130
 #define AOXA_FIRE_HIGH            300
+
+#define ANALOG_LOW                0
+#define ANALOG_HIGH               1023
 
 /*
    STATE handling
